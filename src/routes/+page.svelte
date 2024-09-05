@@ -3,8 +3,12 @@
     let socket : WebSocket;
 
     // Function to send messages
-    function sendMessage() {
-        socket.send(message);
+    function registerPlayer() {
+        const data = {
+            action : "registerPlayer",
+            payload : message
+        }
+        socket.send(JSON.stringify(data));
         message = '';
     }
 
@@ -25,6 +29,6 @@
 <div>
     <h1>Real time chat</h1>
     <input bind:value={message}/>
-    <button on:click={() => sendMessage()}>Send</button>
+    <button on:click={() => registerPlayer()}>Send</button>
     <div>{response}</div>
 </div>
