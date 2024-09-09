@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
+	import { code } from "../../../stores";
 
     export let players = [];
-    export let code = "";
 
     const dispatch = createEventDispatcher();
 
