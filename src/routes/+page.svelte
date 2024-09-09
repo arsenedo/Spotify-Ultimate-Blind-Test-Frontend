@@ -1,65 +1,104 @@
 <script lang="ts">
-    import {onMount} from "svelte";
-    let socket : WebSocket;
+	import HostPage from '$lib/components/Host/HostPage.svelte';
+	import { onMount } from 'svelte';
+	let socket: WebSocket;
+	let name = '';
+    let code = '';
 
-    // Function to send messages
-    function registerPlayer() {
+    const menu = {
+		hostMenu: false,
+		joinMenu: false
+	};
+
+	/**
+	 * Registers a player
+	 * @param type defines if a player is a host (default = player)
+	 */
+	function registerPlayer(type = 'player') {
         const data = {
-            action : "registerPlayer",
-            payload : message
+            action : "",
+            payload : {}
         }
-        socket.send(JSON.stringify(data));
-        message = '';
-    }
 
-    let message = "";
-    let response = "";
+		switch (type) {
+			case 'host':
+				code = generateCode();
+				data.action = "registerHost";
+                data.payload = {
+                    code,
+                    name
+                };
+				break;
+			case 'player':
+                data.action = "registerPlayer";
+                data.payload = {
+                    name
+                }
+			default:
+                return;
+		}
+		socket.send(JSON.stringify(data));
+	}
 
-    const menu =  {
-        hostMenu : false,
-        joinMenu : false,
-    }
+    // Handle functions
+	const handleHost = () => {
+		if (name.length === 0) return;
+		registerPlayer('host');
+		menu.hostMenu = true;
+		menu.joinMenu = false;
+	};
 
-    const handleHost = () => {
-        menu.hostMenu = true;
-        menu.joinMenu = false;
-    }
+	const handleJoin = () => {
+		if (name.length === 0) return;
+		registerPlayer();
+		menu.hostMenu = false;
+		menu.joinMenu = true;
+	};
 
-    const handleJoin = () => {
-        menu.hostMenu = false;
-        menu.joinMenu = true;
-    }
+	const handleBack = () => {
+		menu.hostMenu = false;
+		menu.joinMenu = false;
+	};
+    // End handle functions
 
-    const handleBack = () => {
-        menu.hostMenu = false;
-        menu.joinMenu = false;
-    }
+    // Utils
+	const generateCode = () => {
+		const numbers = 5;
+		let code = '';
+		for (let i = 0; i < numbers; i++) {
+			if (i === 0) {
+				code += Math.floor(Math.random() * 9) + 1;
+				continue;
+			}
+			code += Math.floor(Math.random() * 10);
+		}
+		return code;
+	};
+    // End utils
 
-    onMount(() => {
-        socket = new WebSocket("ws://localhost:8080");
-        socket.addEventListener("open", () => {
-            console.log("Connection opened");
-        });
+	onMount(() => {
+		socket = new WebSocket('ws://localhost:8080');
+		socket.addEventListener('open', () => {
+			console.log('Connection opened');
+		});
 
-        socket.addEventListener("message", (event) => {
-            response = event.data.toString();
-        });
-    })
+		socket.addEventListener('message', (event) => {
+			console.log(event.data.toString());
+		});
+	});
 </script>
+
 <div>
-    {#if menu.hostMenu}
-        <div>Welcome to the host menu</div>
-        <button on:click={() => handleBack()}>Back</button>
-    {:else if menu.joinMenu}
-        <div>Welcome to join menu</div>
-        <button on:click={() => handleBack()}>Back</button>
-    {:else}
-        <h1>Choose</h1>
-        <button on:click={() => handleHost()}>Host</button>
-        <button on:click={() => handleJoin()}>Join</button>
-    {/if}
-    <h1>Real time chat</h1>
-    <input bind:value={message}/>
-    <button on:click={() => registerPlayer()}>Send</button>
-    <div>{response}</div>
+	<h1>Real time chat</h1>
+	<input bind:value={name} placeholder="enter the name" />
+	{#if menu.hostMenu}
+		<HostPage on:back={() => handleBack()} code={code}/>
+	{:else if menu.joinMenu}
+		<div>Welcome to join menu</div>
+		<button on:click={() => handleBack()}>Back</button>
+	{:else}
+		<h1>Choose</h1>
+		<button on:click={() => handleHost()}>Host</button>
+		<button on:click={() => handleJoin()}>Join</button>
+	{/if}
 </div>
