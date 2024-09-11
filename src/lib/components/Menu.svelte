@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-    import { name } from "../../stores";
-    import { code } from "../../stores";
-	import HostPage from "./Host/HostPage.svelte";
-	import InvitedPage from "./Player/InvitedPage.svelte";
+	import { onMount } from 'svelte';
+	import { name, players } from '../../stores';
+	import { code } from '../../stores';
+	import HostPage from './Host/HostPage.svelte';
+	import InvitedPage from './Player/InvitedPage.svelte';
 
-    let socket: WebSocket;
+	let socket: WebSocket;
 
 	const menu = {
 		hostMenu: false,
@@ -16,8 +16,6 @@
 	const handleHost = () => {
 		if ($name.length === 0) return;
 		registerPlayer('host');
-		menu.hostMenu = true;
-		menu.joinMenu = false;
 	};
 
 	const handleJoin = (event) => {
@@ -48,39 +46,23 @@
 
 		switch (type) {
 			case 'host':
-				code = generateCode();
 				data.action = 'registerHost';
 				data.payload = {
-					code,
 					name
 				};
 				break;
 			case 'player':
 				data.action = 'registerPlayer';
 				data.payload = {
-					name,
+					$name,
 					code
 				};
+				break;
 			default:
 				return;
 		}
 		socket.send(JSON.stringify(data));
 	}
-
-	// Utils
-	const generateCode = () => {
-		const numbers = 5;
-		let code = '';
-		for (let i = 0; i < numbers; i++) {
-			if (i === 0) {
-				code += Math.floor(Math.random() * 9) + 1;
-				continue;
-			}
-			code += Math.floor(Math.random() * 10);
-		}
-		return code;
-	};
-	// End utils
 
 	onMount(() => {
 		socket = new WebSocket('ws://localhost:8080');
@@ -89,16 +71,27 @@
 		});
 
 		socket.addEventListener('message', (event) => {
-			console.log(event.data.toString());
+			const response = JSON.parse(event.data.toString());
+			const data = response.data;
+			switch (data.action) {
+				case 'registerPlayer':
+					break;
+				case 'registerHost':
+					menu.hostMenu = true;
+					menu.joinMenu = false;
+					$code = data.code;
+					$players.push($name);
+					break;
+			}
 		});
 	});
 </script>
 
 <div>
-    <div>{$name}</div>
+	<div>{$name}</div>
 	<input bind:value={$name} placeholder="enter the name" />
 	{#if menu.hostMenu}
-		<HostPage on:back={() => handleBack()}/>
+		<HostPage on:back={() => handleBack()} />
 	{:else if menu.joinMenu}
 		<InvitedPage on:back={() => handleBack()} on:join={handleJoin} />
 	{:else}
