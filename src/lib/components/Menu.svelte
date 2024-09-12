@@ -93,7 +93,6 @@
 </script>
 
 <div>
-	<div>{$name}</div>
 	<input bind:value={$name} placeholder="enter the name" />
 	{#if menu.hostMenu}
 		<HostPage on:back={() => handleBack()} />
