@@ -48,13 +48,13 @@
 			case 'host':
 				data.action = 'registerHost';
 				data.payload = {
-					name
+					name : $name
 				};
 				break;
 			case 'player':
 				data.action = 'registerPlayer';
 				data.payload = {
-					$name,
+					name : $name,
 					code
 				};
 				break;
@@ -75,6 +75,11 @@
 			const data = response.data;
 			switch (data.action) {
 				case 'registerPlayer':
+					console.log("A new player has registered", data.newPlayer)
+					players.update((p) => {
+						p.push(data.newPlayer);
+						return p;
+					});
 					break;
 				case 'registerHost':
 					menu.hostMenu = true;
