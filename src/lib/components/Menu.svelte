@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { name, players } from '../../stores';
+	import { isStarted, name, players } from '../../stores';
 	import { code } from '../../stores';
 	import HostPage from './Host/HostPage.svelte';
 	import InvitedPage from './Player/InvitedPage.svelte';
+	import Game from './Game.svelte';
 
 	let socket: WebSocket;
 
@@ -22,6 +23,8 @@
 		if ($name.length === 0) return;
 		registerPlayer('player', event.detail.code);
 	};
+
+	const handleStart = () => {};
 
 	const handleJoinForm = () => {
 		menu.hostMenu = false;
@@ -48,19 +51,30 @@
 			case 'host':
 				data.action = 'registerHost';
 				data.payload = {
-					name : $name
+					name: $name
 				};
 				break;
 			case 'player':
 				data.action = 'registerPlayer';
 				data.payload = {
-					name : $name,
+					name: $name,
 					code
 				};
 				break;
 			default:
 				return;
 		}
+		socket.send(JSON.stringify(data));
+	}
+
+	function startGame() {
+		const data = {
+			action: 'startGame',
+			payload: {
+				code: $code
+			}
+		};
+
 		socket.send(JSON.stringify(data));
 	}
 
@@ -73,13 +87,10 @@
 		socket.addEventListener('message', (event) => {
 			const response = JSON.parse(event.data.toString());
 			const data = response.data;
+			console.warn(response);
 			switch (data.action) {
 				case 'registerPlayer':
-					console.log("A new player has registered", data.newPlayer)
-					players.update((p) => {
-						p.push(data.newPlayer);
-						return p;
-					});
+					players.set(data.players);
 					break;
 				case 'registerHost':
 					menu.hostMenu = true;
@@ -87,18 +98,24 @@
 					$code = data.code;
 					$players.push($name);
 					break;
+				case 'startGame':
+					menu.hostMenu = false;
+					menu.joinMenu = false;
+					$isStarted = true;
 			}
 		});
 	});
 </script>
 
 <div>
-	<input bind:value={$name} placeholder="enter the name" />
 	{#if menu.hostMenu}
-		<HostPage on:back={() => handleBack()} />
+		<HostPage on:back={() => handleBack()} on:start={() => startGame()}/>
 	{:else if menu.joinMenu}
 		<InvitedPage on:back={() => handleBack()} on:join={handleJoin} />
+	{:else if $isStarted}
+		<Game />
 	{:else}
+		<input bind:value={$name} placeholder="enter the name" />
 		<h1>Choose</h1>
 		<button on:click={() => handleHost()}>Host</button>
 		<button on:click={() => handleJoinForm()}>Join</button>
