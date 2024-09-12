@@ -5,13 +5,34 @@
 	import HostPage from './Host/HostPage.svelte';
 	import InvitedPage from './Player/InvitedPage.svelte';
 	import Game from './Game.svelte';
-
-	let socket: WebSocket;
+	import websocket from '$lib/stores/websocket';
 
 	const menu = {
 		hostMenu: false,
 		joinMenu: false
 	};
+
+	const unsubscribe = websocket.subscribe(data => {
+		if (data.actionData) {
+			console.log(data)
+			const actionData : any = data.actionData;
+			switch (actionData.action) {
+				case 'registerPlayer':
+					players.set(actionData.players);
+					break;
+				case 'registerHost':
+					menu.hostMenu = true;
+					menu.joinMenu = false;
+					$code = actionData.code;
+					$players.push($name);
+					break;
+				case 'startGame':
+					menu.hostMenu = false;
+					menu.joinMenu = false;
+					$isStarted = true;
+			}
+		}
+	});
 
 	// Handle functions
 	const handleHost = () => {
@@ -19,12 +40,10 @@
 		registerPlayer('host');
 	};
 
-	const handleJoin = (event) => {
+	const handleJoin = (event: any) => {
 		if ($name.length === 0) return;
 		registerPlayer('player', event.detail.code);
 	};
-
-	const handleStart = () => {};
 
 	const handleJoinForm = () => {
 		menu.hostMenu = false;
@@ -64,7 +83,7 @@
 			default:
 				return;
 		}
-		socket.send(JSON.stringify(data));
+		websocket.send(data);
 	}
 
 	function startGame() {
@@ -75,36 +94,8 @@
 			}
 		};
 
-		socket.send(JSON.stringify(data));
+		websocket.send(data);
 	}
-
-	onMount(() => {
-		socket = new WebSocket('ws://localhost:8080');
-		socket.addEventListener('open', () => {
-			console.log('Connection opened');
-		});
-
-		socket.addEventListener('message', (event) => {
-			const response = JSON.parse(event.data.toString());
-			const data = response.data;
-			console.warn(response);
-			switch (data.action) {
-				case 'registerPlayer':
-					players.set(data.players);
-					break;
-				case 'registerHost':
-					menu.hostMenu = true;
-					menu.joinMenu = false;
-					$code = data.code;
-					$players.push($name);
-					break;
-				case 'startGame':
-					menu.hostMenu = false;
-					menu.joinMenu = false;
-					$isStarted = true;
-			}
-		});
-	});
 </script>
 
 <div>
