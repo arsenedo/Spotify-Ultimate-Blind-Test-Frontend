@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 const { subscribe, set } = writable({
     isConnected : false,
-    actionData : null
+    actionData : null,
 });
 
 let socket : WebSocket;
@@ -17,9 +17,8 @@ if (typeof window !== 'undefined') {
     
     socket.addEventListener('message', (event) => {
         console.log("message received")
-        const response = JSON.parse(event.data.toString());
-        const data = response.data;
-        set({ isConnected: true, actionData: data });
+        const actionData = JSON.parse(event.data.toString());
+        set({ isConnected: true, actionData });
     });
     
     socket.addEventListener('close', () => {

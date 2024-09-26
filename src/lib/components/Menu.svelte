@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { isStarted, name, players } from '../../stores';
 	import { code } from '../../stores';
 	import HostPage from './Host/HostPage.svelte';
@@ -12,24 +11,30 @@
 		joinMenu: false
 	};
 
-	const unsubscribe = websocket.subscribe(data => {
-		if (data.actionData) {
-			console.log(data)
-			const actionData : any = data.actionData;
-			switch (actionData.action) {
+	const unsubscribe = websocket.subscribe(ws => {
+		if (ws.actionData) {
+			console.log(ws.actionData)
+			const data = ws.actionData.data;
+			console.log(data.action)
+			switch (data.action) {
 				case 'registerPlayer':
-					players.set(actionData.players);
+					players.set(data.players);
+					$code = data.code;
 					break;
 				case 'registerHost':
 					menu.hostMenu = true;
 					menu.joinMenu = false;
-					$code = actionData.code;
+					$code = data.code;
 					$players.push($name);
 					break;
 				case 'startGame':
 					menu.hostMenu = false;
 					menu.joinMenu = false;
 					$isStarted = true;
+					break;
+				case 'error' :
+					console.error(ws.actionData.msg)
+					break;
 			}
 		}
 	});
