@@ -5,6 +5,7 @@
 	let title: string;
 	let onCooldown = false;
 	let promise: Promise<any>;
+    let chosenAlbums = [];
 
 	const searchAlbum = async () => {
         onCooldown = true;
@@ -30,6 +31,10 @@
 		return await res;
 	};
 
+    const handleChooseAlbum = (album) => {
+        chosenAlbums = [...chosenAlbums, album];
+    }
+
 	const handleSearch = () => {
 		if (title.length < 3 || onCooldown) return;
 		promise = searchAlbum();
@@ -38,6 +43,14 @@
 
 <div>
 	Choose up to 5 albums
+    <div>
+        <div>Chosen :</div>
+        {#each chosenAlbums as album}
+            <div>
+                {album.name}
+            </div>
+        {/each}
+    </div>
 	<div>
 		<input bind:value={title} on:keyup={handleSearch} />
 		{#if promise}
@@ -46,7 +59,9 @@
 					<div>Fetching songs...</div>
 				{:then data}
 					{#each data.albums.items as album}
-						{album.name}
+                        <button class="h-6 bg-neutral-500 cursor-pointer" on:click={() => handleChooseAlbum(album)}>
+                            {album.name}
+                        </button>
 					{/each}
 				{/await}
 			</div>
