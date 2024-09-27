@@ -2,6 +2,7 @@
 	import websocket from "$lib/stores/websocket";
 	import { onMount } from "svelte";
 	import { code, name } from "../../stores";
+	import AlbumPicker from "./Game/AlbumPicker.svelte";
 
 	const unsubscribe = websocket.subscribe(ws => {
 		if (ws.actionData) {
@@ -26,9 +27,6 @@
         websocket.send(data)
     };
 
-    onMount(() => {
-        playerReady();
-    })
 </script>
 
-<div>Game started!</div>
+<div><AlbumPicker/></div>
