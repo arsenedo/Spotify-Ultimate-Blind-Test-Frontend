@@ -3,12 +3,11 @@
 	import axios from 'axios';
 
 	let title: string;
-	let isSearching: boolean;
 	let onCooldown = false;
 	let promise: Promise<any>;
 
 	const searchAlbum = async () => {
-		isSearching = true;
+        onCooldown = true;
 		const res = await axios
 			.get('https://api.spotify.com/v1/search', {
 				headers: {
@@ -21,18 +20,18 @@
 				}
 			})
 			.then((resp) => {
-				isSearching = false;
+                setTimeout(() => onCooldown = false, 1000)
 				return resp.data;
 			})
 			.catch((e) => {
 				console.log('Couldnt get the album...');
 				return Promise.reject(e);
 			});
-		return await res.data;
+		return await res;
 	};
 
 	const handleSearch = () => {
-		if (title.length < 3 || isSearching) return;
+		if (title.length < 3 || onCooldown) return;
 		promise = searchAlbum();
 	};
 </script>
@@ -46,7 +45,6 @@
 				{#await promise}
 					<div>Fetching songs...</div>
 				{:then data}
-                {console.log(data)}
 					{#each data.albums.items as album}
 						{album.name}
 					{/each}
