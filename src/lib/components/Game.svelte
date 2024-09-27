@@ -27,6 +27,10 @@
         websocket.send(data)
     };
 
+    const handleReady = (data) => {
+        console.log(data.detail)
+    }
+
 </script>
 
-<div><AlbumPicker/></div>
+<div><AlbumPicker on:ready={handleReady}/></div>

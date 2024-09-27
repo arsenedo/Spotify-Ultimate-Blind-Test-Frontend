@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { spotify } from '$lib/stores/spotify';
 	import axios from 'axios';
+	import { createEventDispatcher } from 'svelte';
 
 	let title: string;
 	let onCooldown = false;
 	let promise: Promise<any>;
     let chosenAlbums = [];
+
+    const dispatch = createEventDispatcher();
 
 	const searchAlbum = async () => {
         onCooldown = true;
@@ -67,4 +70,7 @@
 			</div>
 		{/if}
 	</div>
+    <div>
+        <button class="bg-green-500 h-6 rounded-md" on:click={() => dispatch('ready', { chosenAlbums })}>Ready</button>
+    </div>
 </div>
