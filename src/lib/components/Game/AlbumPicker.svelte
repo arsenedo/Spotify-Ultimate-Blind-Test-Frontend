@@ -3,6 +3,7 @@
 	import websocket from '$lib/stores/websocket';
 	import axios from 'axios';
 	import { createEventDispatcher } from 'svelte';
+	import { code } from '../../../stores';
 
 	let title: string;
 	let onCooldown = false;
@@ -24,7 +25,7 @@
 				}
 			})
 			.then((resp) => {
-                setTimeout(() => onCooldown = false, 1000)
+                setTimeout(() => onCooldown = false, 500)
 				return resp.data;
 			})
 			.catch((e) => {
@@ -35,7 +36,13 @@
 	};
 
     const handleChooseAlbum = (album) => {
-        chosenAlbums = [...chosenAlbums, album];
+		console.log(album)
+		const newAlbum = {
+			id : album.id,
+			name : album.name,
+			image : album.images[0]
+		}
+        chosenAlbums = [...chosenAlbums, newAlbum];
 		if (chosenAlbums.length >= 2) error = "";
     }
 
@@ -52,7 +59,7 @@
 
 		const data = {
 			action: 'appendAlbums',
-			payload: { chosenAlbums }
+			payload: { albums : chosenAlbums, code : $code }
 		};
 
 		websocket.send(data);
