@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { spotify } from '$lib/stores/spotify';
+	import websocket from '$lib/stores/websocket';
 	import axios from 'axios';
 	import { createEventDispatcher } from 'svelte';
 
@@ -7,8 +8,7 @@
 	let onCooldown = false;
 	let promise: Promise<any>;
     let chosenAlbums = [];
-
-    const dispatch = createEventDispatcher();
+	let error = ""
 
 	const searchAlbum = async () => {
         onCooldown = true;
@@ -36,12 +36,27 @@
 
     const handleChooseAlbum = (album) => {
         chosenAlbums = [...chosenAlbums, album];
+		if (chosenAlbums.length >= 2) error = "";
     }
 
 	const handleSearch = () => {
 		if (title.length < 3 || onCooldown) return;
 		promise = searchAlbum();
 	};
+
+	const handleReady = () => {
+		if (chosenAlbums.length < 2) {
+			error = "You must choose at least 2 albums to start the game!";
+			return
+		}
+
+		const data = {
+			action: 'appendAlbums',
+			payload: { chosenAlbums }
+		};
+
+		websocket.send(data);
+	}
 </script>
 
 <div>
@@ -71,6 +86,9 @@
 		{/if}
 	</div>
     <div>
-        <button class="bg-green-500 h-6 rounded-md" on:click={() => dispatch('ready', { chosenAlbums })}>Ready</button>
+        <button class="bg-green-500 h-6 rounded-md" on:click={() => handleReady()}>Ready</button>
     </div>
+	{#if error.length > 0}
+		<div class="text-red-500">{error}</div>
+	{/if}
 </div>
