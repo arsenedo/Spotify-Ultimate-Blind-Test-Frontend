@@ -9,7 +9,13 @@
 	let onCooldown = false;
 	let promise: Promise<any>;
     let chosenAlbums = [];
-	let error = ""
+	let error;
+	export let externalError;
+
+	$ : if(externalError) {
+		error = externalError,
+		chosenAlbums = [];
+	}
 
 	const searchAlbum = async () => {
         onCooldown = true;
@@ -95,7 +101,7 @@
     <div>
         <button class="bg-green-500 h-6 rounded-md" on:click={() => handleReady()}>Ready</button>
     </div>
-	{#if error.length > 0}
+	{#if error}
 		<div class="text-red-500">{error}</div>
 	{/if}
 </div>

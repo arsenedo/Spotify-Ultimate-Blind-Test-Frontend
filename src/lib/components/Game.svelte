@@ -9,15 +9,23 @@
 
 	$: player = $playerStore;
 
+    let error;
+
 	const unsubscribe = websocket.subscribe((ws) => {
 		if (ws.actionData) {
 			const data = ws.actionData.data;
-			console.log(data.action);
 			switch (data.action) {
 				case 'playerReady':
 					console.log('Im ready!');
+                    break;
 				case 'appendAlbums':
-					console.log(data);
+					if(ws.actionData.code === 200) {
+                        handleReady();
+                    }
+                    if(ws.actionData.code === 207) {
+                        error = `The following albums couldn't be added : ${data.existingAlbums.map(album => album.name).join(', ')}`
+                    }
+                    break;
 			}
 		}
 	});
@@ -33,11 +41,11 @@
 		websocket.send(data);
 	};
 
-	const handleReady = (data) => {
-		console.log(data.detail);
-	};
+    const handleReady = () => {
+        playerReady();
+    }
 </script>
 
-{#if player.states.gameDataPicked}
-	<div><AlbumPicker on:ready={handleReady} /></div>
+{#if !player.states.gameDataPicked}
+	<div><AlbumPicker externalError={error}/></div>
 {/if}

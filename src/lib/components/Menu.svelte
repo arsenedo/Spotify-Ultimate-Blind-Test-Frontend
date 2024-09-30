@@ -13,9 +13,7 @@
 
 	const unsubscribe = websocket.subscribe(ws => {
 		if (ws.actionData) {
-			console.log(ws.actionData)
 			const data = ws.actionData.data;
-			console.log(data.action)
 			switch (data.action) {
 				case 'registerPlayer':
 					players.set(data.players);
