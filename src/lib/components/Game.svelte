@@ -1,9 +1,11 @@
 <script lang="ts">
 	import websocket from '$lib/stores/websocket';
 	import { onMount } from 'svelte';
-	import { code, name } from '../../stores';
+	import { allPickedGameData, code, name } from '../../stores';
 	import AlbumPicker from './Game/AlbumPicker.svelte';
 	import { playerStore } from '$lib/stores/player';
+	import { gameData } from '../../stores';
+	import GameWrapper from './Game/GameWrapper.svelte';
 
 	let player;
 
@@ -16,16 +18,21 @@
 			const data = ws.actionData.data;
 			switch (data.action) {
 				case 'playerReady':
-					console.log('Im ready!');
+					playerStore.setState({ready : true});
+					playerStore.setState({ gameDataPicked : true });
                     break;
 				case 'appendAlbums':
 					if(ws.actionData.code === 200) {
-                        handleReady();
+						handleReady();
                     }
                     if(ws.actionData.code === 207) {
                         error = `The following albums couldn't be added : ${data.existingAlbums.map(album => album.name).join(', ')}`
                     }
                     break;
+				case 'allReady':
+					$allPickedGameData = true;
+					console.log("All players are ready!");
+					break;
 			}
 		}
 	});
@@ -48,4 +55,8 @@
 
 {#if !player.states.gameDataPicked}
 	<div><AlbumPicker externalError={error}/></div>
+	{:else if player.states.ready && !$allPickedGameData}
+	<div>Waiting for other players to pick albums</div>
+	{:else if $allPickedGameData}
+	<GameWrapper/>
 {/if}
