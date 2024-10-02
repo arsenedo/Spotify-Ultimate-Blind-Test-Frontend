@@ -12,6 +12,7 @@
 	$: player = $playerStore;
 
     let error;
+	let song;
 
 	const unsubscribe = websocket.subscribe((ws) => {
 		if (ws.actionData) {
@@ -32,6 +33,9 @@
 				case 'allReady':
 					$allPickedGameData = true;
 					console.log("All players are ready!");
+					break;
+				case 'songReceive':
+					song = data.song;
 					break;
 			}
 		}
@@ -58,5 +62,5 @@
 	{:else if player.states.ready && !$allPickedGameData}
 	<div>Waiting for other players to pick albums</div>
 	{:else if $allPickedGameData}
-	<GameWrapper/>
+	<GameWrapper song={song}/>
 {/if}
