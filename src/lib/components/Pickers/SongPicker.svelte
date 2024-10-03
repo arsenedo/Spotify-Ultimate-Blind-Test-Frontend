@@ -53,7 +53,7 @@
 
 	const handleReady = () => {
         const data = {
-			action: 'chosenSong',
+			action: 'songPicked',
 			payload: { song : chosenSong.name, code : $code, name : $name }
 		};
 
