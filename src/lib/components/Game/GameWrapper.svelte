@@ -7,6 +7,8 @@
 	let chosenSong;
     export let song;
 
+	$ : console.log(song);
+
 	const handleChoiceMade = (e) => {
 		chosenSong = e.detail.song;
 	}

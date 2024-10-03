@@ -8,10 +8,11 @@
 	import GameWrapper from './Game/GameWrapper.svelte';
 
 	let player;
+	let score;
 
 	$: player = $playerStore;
 
-    let error;
+	let error;
 	let song;
 
 	const unsubscribe = websocket.subscribe((ws) => {
@@ -19,23 +20,30 @@
 			const data = ws.actionData.data;
 			switch (data.action) {
 				case 'playerReady':
-					playerStore.setState({ready : true});
-					playerStore.setState({ gameDataPicked : true });
-                    break;
+					playerStore.setState({ ready: true });
+					playerStore.setState({ gameDataPicked: true });
+					break;
 				case 'appendAlbums':
-					if(ws.actionData.code === 200) {
+					if (ws.actionData.code === 200) {
 						handleReady();
-                    }
-                    if(ws.actionData.code === 207) {
-                        error = `The following albums couldn't be added : ${data.existingAlbums.map(album => album.name).join(', ')}`
-                    }
-                    break;
+					}
+					if (ws.actionData.code === 207) {
+						error = `The following albums couldn't be added : ${data.existingAlbums.map((album) => album.name).join(', ')}`;
+					}
+					break;
 				case 'allReady':
 					$allPickedGameData = true;
-					console.log("All players are ready!");
+					console.log('All players are ready!');
 					break;
 				case 'songReceive':
 					song = data.song;
+					break;
+				case 'songPicked':
+					score = data.score;
+					console.log(score);
+					break;
+				case 'roundOver':
+					prepareNextRound();
 					break;
 			}
 		}
@@ -52,15 +60,19 @@
 		websocket.send(data);
 	};
 
-    const handleReady = () => {
-        playerReady();
-    }
+	const handleReady = () => {
+		playerReady();
+	};
+	
+	const prepareNextRound = () => {
+		console.log("Round over, getting ready for the next one!");
+	}
 </script>
 
 {#if !player.states.gameDataPicked}
-	<div><AlbumPicker externalError={error}/></div>
-	{:else if player.states.ready && !$allPickedGameData}
+	<div><AlbumPicker externalError={error} /></div>
+{:else if player.states.ready && !$allPickedGameData}
 	<div>Waiting for other players to pick albums</div>
-	{:else if $allPickedGameData}
-	<GameWrapper song={song}/>
+{:else if $allPickedGameData}
+	<GameWrapper {song} />
 {/if}
