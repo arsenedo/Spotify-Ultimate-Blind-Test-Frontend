@@ -87,7 +87,7 @@
 		{#if promise}
 			<div>
 				{#await promise}
-					<div>Fetching songs...</div>
+					<div>Fetching albums...</div>
 				{:then data}
 					{#each data.albums.items as album}
                         <button class="h-6 bg-neutral-500 cursor-pointer" on:click={() => handleChooseAlbum(album)}>
