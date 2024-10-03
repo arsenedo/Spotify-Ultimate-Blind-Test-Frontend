@@ -2,7 +2,7 @@
 	import websocket from '$lib/stores/websocket';
 	import { onMount } from 'svelte';
 	import { allPickedGameData, code, name } from '../../stores';
-	import AlbumPicker from './Game/AlbumPicker.svelte';
+	import AlbumPicker from './Pickers/AlbumPicker.svelte';
 	import { playerStore } from '$lib/stores/player';
 	import { gameData } from '../../stores';
 	import GameWrapper from './Game/GameWrapper.svelte';

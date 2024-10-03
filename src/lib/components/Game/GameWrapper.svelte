@@ -2,8 +2,14 @@
 	import websocket from "$lib/stores/websocket";
 	import { onMount } from "svelte";
 	import { code, name } from "../../../stores";
+	import SongPicker from "../Pickers/SongPicker.svelte";
 
+	let chosenSong;
     export let song;
+
+	const handleChoiceMade = (e) => {
+		chosenSong = e.detail.song;
+	}
 
     onMount(() => {
         console.log("Mounted!");
@@ -17,5 +23,9 @@
 </script>
 <div>Here will be the game!</div>
 {#if song}
-    <div>Received a song!song name : {song.name}</div>
+	{#if !chosenSong}
+		<SongPicker on:songPicked={handleChoiceMade}/>
+	{:else if chosenSong}
+		<div>Choice made, waiting for results...</div>
+	{/if}
 {/if}
