@@ -15,7 +15,9 @@
 
 	$: pointsWon = player.score - player.prevScore;
 	$: console.log(song);
-	$: if(!song) chosenSong = "";
+	$: if(!song) {
+		chosenSong = ""
+	};
 
 	const handleChoiceMade = (e) => {
 		chosenSong = e.detail.song;
