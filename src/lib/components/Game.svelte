@@ -14,6 +14,7 @@
 
 	let error;
 	let song;
+	let finalStats; // Stats of the game when ended
 
 	const unsubscribe = websocket.subscribe((ws) => {
 		if (ws.actionData) {
@@ -44,6 +45,9 @@
 					break;
 				case 'roundOver':
 					prepareNextRound();
+					break;
+				case 'gameOver':
+					finalStats = data.finalStats
 					break;
 			}
 		}
@@ -83,6 +87,8 @@
 	<div><AlbumPicker externalError={error} /></div>
 {:else if player.states.ready && !$allPickedGameData}
 	<div>Waiting for other players to pick albums</div>
-{:else if $allPickedGameData}
+{:else if $allPickedGameData && !finalStats}
 	<GameWrapper {song} />
+{:else if finalStats}
+	<div>End game!</div>
 {/if}
