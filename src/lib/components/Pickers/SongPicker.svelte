@@ -47,7 +47,7 @@
     }
 
 	const handleSearch = () => {
-		if (title.length < 3 || onCooldown) return;
+		if (!title || title.length < 3 || onCooldown) return;
 		promise = searchAlbum();
 	};
 

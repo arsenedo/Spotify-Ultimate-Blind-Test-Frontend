@@ -40,7 +40,7 @@
 					break;
 				case 'songPicked':
 					score = data.score;
-					console.log(score);
+					if (score) playerStore.updateScore(score);
 					break;
 				case 'roundOver':
 					prepareNextRound();
@@ -63,10 +63,20 @@
 	const handleReady = () => {
 		playerReady();
 	};
-	
+
 	const prepareNextRound = () => {
-		console.log("Round over, getting ready for the next one!");
-	}
+		console.log('Round over, getting ready for the next one!');
+		song = undefined;
+
+		setTimeout(() => {
+			const data = {
+				action: 'playerLoaded',
+				payload: { name: $name, code: $code }
+			};
+
+			websocket.send(data);
+		}, 10000);
+	};
 </script>
 
 {#if !player.states.gameDataPicked}
