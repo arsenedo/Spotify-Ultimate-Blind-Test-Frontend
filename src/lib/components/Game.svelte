@@ -91,4 +91,7 @@
 	<GameWrapper {song} />
 {:else if finalStats}
 	<div>End game!</div>
+	{#each finalStats as playerStats}
+		<div>{playerStats.name} : {playerStats.score}</div>
+	{/each}
 {/if}

@@ -23,8 +23,8 @@ function createPlayer() {
                 ...newState // Spread the newState correctly
             } 
         })),
-        updateScore: (points) => update((n) => {
-            return {...n, prevScore: n.score, score: n.score+points}
+        updateScore: (newScore) => update((n) => {
+            return {...n, prevScore: n.score, score: newScore}
         }),
         reset: set(initialState)
 	};

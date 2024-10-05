@@ -43,6 +43,8 @@
 {:else}
 	{#if player.score > player.prevScore}
 		<div>Congratulations, you won {pointsWon} points!</div>
+		{:else}
+		<div>Wrong song!</div>
 	{/if}
 	<div>Your score is : {player.score}</div>
 {/if}
