@@ -5,6 +5,7 @@
 	import InvitedPage from './Player/InvitedPage.svelte';
 	import Game from './Game.svelte';
 	import websocket from '$lib/stores/websocket';
+	import spotifyLogo from '$lib/images/spotify_logo.png';
 
 	const menu = {
 		hostMenu: false,
@@ -101,7 +102,7 @@
 	}
 </script>
 
-<div>
+<div class="w-5/6 flex flex-col items-center justify-center gap-5 m-auto">
 	{#if menu.hostMenu}
 		<HostPage on:back={() => handleBack()} on:start={() => startGame()}/>
 	{:else if menu.joinMenu}
@@ -109,9 +110,15 @@
 	{:else if $isStarted}
 		<Game />
 	{:else}
-		<input bind:value={$name} placeholder="enter the name" />
-		<h1>Choose</h1>
-		<button on:click={() => handleHost()}>Host</button>
-		<button on:click={() => handleJoinForm()}>Join</button>
+	<div class="flex justify-center items-center">
+		<img src={spotifyLogo} alt="spotify_logo" class="w-2/3"/>
+	</div>
+	<div class="flex flex-col w-full gap-5">
+		<input bind:value={$name} placeholder="enter the name" class="rounded-full h-10 text-center p-1 box-border text-white placeholder:text-neutral-400 bg-neutral-700 focus:ring focus:ring-spotifyGreen focus:outline-none"/>
+		<div class="flex flex-col gap-2">
+			<button on:click={() => handleHost()} class="h-12 bg-spotifyGreen rounded-full">Host</button>
+			<button on:click={() => handleJoinForm()} class="h-12 border border-white bg-black text-white rounded-full">Join</button>
+		</div>
+	</div>
 	{/if}
 </div>
