@@ -7,6 +7,6 @@
 	spotify.set(data);
 </script>
 
-<div>
+<div class="h-screen flex items-center justify-center bg-neutral-900">
 	<Menu/>
 </div>
