@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { code, isStarted, minPlayers } from '../../../stores';
 	import { players } from '../../../stores';
+	import spotifyLogo from '$lib/images/spotify_logo.png';
 
 	const dispatch = createEventDispatcher();
 
@@ -15,17 +16,23 @@
 	}
 </script>
 
-<div>
-	<h1>Host menu</h1>
-	<div>{$code}</div>
-	<div>
-		Joined players :
-		{#each $players as player}
-			<div>
-				{player}
-			</div>
-		{/each}
+<div class="h-screen flex flex-col justify-between w-full gap-5">
+	<div class="flex justify-center items-center">
+		<img src={spotifyLogo} alt="spotify_logo" class="w-2/6 pt-2"/>
 	</div>
-	<button on:click={() => handleStart()}>Start</button>
+	<div class="text-white flex-1">
+		<h1 class="text-6xl text-center mt-2 mb-5">{$code}</h1>
+		<div>
+			Joined players :
+			{#each $players as player}
+				<div>
+					{player}
+				</div>
+			{/each}
+		</div>
+	</div>
+	<div class="flex flex-col gap-2 pb-2">
+		<button on:click={() => handleStart()} class="h-12 bg-spotifyGreen rounded-full">Start</button>
+		<button on:click={() => handleBack()} class="h-12 border border-white bg-black text-white rounded-full">Back</button>
+	</div>
 </div>
-<button on:click={() => handleBack()}>Back</button>
