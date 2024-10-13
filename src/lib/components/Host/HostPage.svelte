@@ -3,9 +3,8 @@
 	import { code, isStarted, minPlayers } from '../../../stores';
 	import { players } from '../../../stores';
 	import spotifyLogo from '$lib/images/spotify_logo.png';
-	import host from '$lib/images/host.webp';
-	import invited from '$lib/images/invited.webp';
 	import PlayerCard from '../Player/PlayerCard.svelte';
+	import PlayerList from '../Player/PlayerList.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -25,15 +24,7 @@
 	</div>
 	<div class="text-white flex-1">
 		<h1 class="text-6xl text-center mt-2 mb-5">{$code}</h1>
-		<div class="grid grid-cols-2 gap-3">
-			{#each $players as player, i}
-				{#if i === 0}
-					<PlayerCard name={player} img={host} />
-				{:else}
-					<PlayerCard name={player} img={invited} />
-				{/if}
-			{/each}
-		</div>
+		<PlayerList players={$players}/>
 	</div>
 	<div class="flex flex-col gap-2 pb-2">
 		<button on:click={() => handleStart()} class="h-12 bg-spotifyGreen rounded-full">Start</button>
