@@ -4,6 +4,7 @@
 	import axios from 'axios';
 	import { createEventDispatcher } from 'svelte';
 	import { code } from '../../../stores';
+	import SongList from '../Lists/SongList.svelte';
 
 	let title: string;
 	let onCooldown = false;
@@ -72,15 +73,11 @@
 	}
 </script>
 
-<div>
-	Choose up to 5 albums
+<div class="text-white h-screen flex flex-col justify-between items-center w-full">
+	<h1 class="text-2xl text-center pt-3">Choose up to 5 albums</h1>
     <div>
         <div>Chosen :</div>
-        {#each chosenAlbums as album}
-            <div>
-                {album.name}
-            </div>
-        {/each}
+        <SongList items={chosenAlbums}/>
     </div>
 	<div>
 		<input bind:value={title} on:keyup={handleSearch} />
@@ -98,9 +95,9 @@
 			</div>
 		{/if}
 	</div>
-    <div>
-        <button class="bg-green-500 h-6 rounded-md" on:click={() => handleReady()}>Ready</button>
-    </div>
+	<div class="pb-2 w-full">
+		<button class="h-12 bg-spotifyGreen rounded-full w-full" on:click={() => handleReady()}>Ready</button>
+	</div>
 	{#if error}
 		<div class="text-red-500">{error}</div>
 	{/if}

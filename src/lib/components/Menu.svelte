@@ -102,7 +102,7 @@
 	}
 </script>
 
-<div class="w-5/6 flex flex-col items-center justify-center gap-5 m-auto">
+<div class="w-5/6 flex flex-col items-center justify-center gap-5 m-auto h-full">
 	{#if menu.hostMenu}
 		<HostPage on:back={() => handleBack()} on:start={() => startGame()}/>
 	{:else if menu.joinMenu}

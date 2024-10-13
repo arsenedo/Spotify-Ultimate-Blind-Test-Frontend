@@ -84,7 +84,7 @@
 </script>
 
 {#if !player.states.gameDataPicked}
-	<div><AlbumPicker externalError={error} /></div>
+	<AlbumPicker externalError={error} />
 {:else if player.states.ready && !$allPickedGameData}
 	<div>Waiting for other players to pick albums</div>
 {:else if $allPickedGameData && !finalStats}
