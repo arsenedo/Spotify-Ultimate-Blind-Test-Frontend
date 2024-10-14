@@ -24,7 +24,7 @@
 	</div>
 	<div class="text-white h-3/5">
 		<h1 class="text-6xl text-center">{$code}</h1>
-		<div class="h-full overflow-y-scroll">
+		<div class="h-full overflow-y-auto">
 			<PlayerList players={$players} />
 		</div>
 	</div>
