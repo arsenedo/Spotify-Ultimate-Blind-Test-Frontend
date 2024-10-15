@@ -8,7 +8,7 @@ const { subscribe, set } = writable({
 let socket : WebSocket;
 
 if (typeof window !== 'undefined') {
-    socket = new WebSocket('wss://giant-east-adjustment.glitch.me');
+    socket = new WebSocket('wss://localhost:8080');
     
     socket.addEventListener('open', () => {
         console.log('Connection opened');

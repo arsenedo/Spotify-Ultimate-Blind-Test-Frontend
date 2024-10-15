@@ -86,12 +86,12 @@
 {#if !player.states.gameDataPicked}
 	<AlbumPicker externalError={error} />
 {:else if player.states.ready && !$allPickedGameData}
-	<div>Waiting for other players to pick albums</div>
+	<div class="text-xl text-white">Waiting for other players to pick albums</div>
 {:else if $allPickedGameData && !finalStats}
 	<GameWrapper {song} />
 {:else if finalStats}
-	<div>End game!</div>
+	<div class="text-white">End game!</div>
 	{#each finalStats as playerStats}
-		<div>{playerStats.name} : {playerStats.score}</div>
+		<div class="text-white">{playerStats.name} : {playerStats.score}</div>
 	{/each}
 {/if}

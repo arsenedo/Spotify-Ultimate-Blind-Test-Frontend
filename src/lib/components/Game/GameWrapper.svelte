@@ -34,17 +34,19 @@
 	});
 </script>
 
-{#if song}
-	{#if !chosenSong}
-		<SongPicker on:songPicked={handleChoiceMade} />
-	{:else if chosenSong}
-		<div>Choice made, waiting for results...</div>
-	{/if}
-{:else}
-	{#if player.score > player.prevScore}
-		<div>Congratulations, you won {pointsWon} points!</div>
+<div class="text-white">
+	{#if song}
+		{#if !chosenSong}
+			<SongPicker on:songPicked={handleChoiceMade} />
+		{:else if chosenSong}
+			<div>Choice made, waiting for results...</div>
+		{/if}
+	{:else}
+		{#if player.score > player.prevScore}
+			<div>Congratulations, you won {pointsWon} points!</div>
 		{:else}
-		<div>Wrong song!</div>
+			<div>Wrong song!</div>
+		{/if}
+		<div>Your score is : {player.score}</div>
 	{/if}
-	<div>Your score is : {player.score}</div>
-{/if}
+</div>
