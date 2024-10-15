@@ -56,7 +56,7 @@
 	const handleSearch = () => {
 		if (title.length < 3) {
 			promise = undefined;
-			return
+			return;
 		}
 		if (onCooldown) return;
 		promise = searchAlbum();
@@ -92,7 +92,11 @@
 						<div>Fetching albums...</div>
 					{:then data}
 						{#each data.albums.items as album}
-							<a on:click={() => handleChooseAlbum(album)} href="#" class="block w-full h-16 [&:not(:last-child)]:border-b-2 [&:not(:last-child)]:border-neutral-200">
+							<a
+								on:click={() => handleChooseAlbum(album)}
+								href="#"
+								class="block w-full h-16 [&:not(:last-child)]:border-b-2 [&:not(:last-child)]:border-neutral-200"
+							>
 								<div class="w-full h-full flex justify-between items-center gap-2">
 									<img class="h-full" src={album.images[2].url} alt="album_img" />
 									<div>{album.name}</div>
