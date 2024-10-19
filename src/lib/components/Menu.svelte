@@ -16,9 +16,9 @@
 		if (ws.actionData) {
 			const data = ws.actionData.data;
 			switch (data.action) {
-				case 'registerPlayer':
+				case 'updatePlayers':
 					players.set(data.players);
-					$code = data.code;
+					if(!$code) $code = data.code;
 					break;
 				case 'registerHost':
 					menu.hostMenu = true;
